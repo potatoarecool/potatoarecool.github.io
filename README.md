@@ -1,4 +1,11 @@
-# My kinda crummy website
+# My even more crummy website (V2)
+- randomly generated mondrian-style design
+- looks different every time
+- built from scratch
+- not HTML4/old browser friendly at all
+- probably looks bad on mobile
+
+# My kinda crummy website (V1)
 
 - built with some crappy WYSIWYG editor in 10 mins
 - has really great copy
