@@ -90,7 +90,6 @@ function init() {
    var height = window.innerHeight;
    var width = window.innerWidth;
 
-   console.log('specs', width, height);
    // if very narrow, then change values
    if (width < 600) {
       console.log("narrow mode on");
@@ -103,6 +102,14 @@ function init() {
 
    var mondrian = createMondrian(canvas, opts);
    insertContent(mondrian);
+
 }
 
+var resizeTimeout;
+window.onresize = function(){
+   if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+   }
+   resizeTimeout = setTimeout(init,200);
+};
 init();
