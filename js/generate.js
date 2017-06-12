@@ -78,7 +78,7 @@ function getSquares(mondrian) {
 
          // find y2 via. going down.
          _.forEach(hLines, function(hLine2) {
-            if (hLine2.start.x <= x1 && hLine2.end.x >= x1 && hLine2.start.y > y1) {
+            if (hLine2.start.x <= x1 && hLine2.end.x > x1 && hLine2.start.y > y1) {
                y2 = hLine2.start.y;
                return false;
             }
