@@ -4,6 +4,7 @@ function showDialog(cardName) {
     if (cardName) {
         $('.dialog .detail.' + cardName).show();
     }
+
     isDialogOpen = true;
 }
 
@@ -28,12 +29,11 @@ function setupDialog() {
             return;
         toggleDialog();
     });
-    $('.dialog-content').click(function() {
-    });
 }
 
 var isDialogOpen;
 
-window.onload = function() {
+
+window.addEventListener("load", function() {
     setupDialog();
-};
+});
