@@ -105,12 +105,12 @@ function init() {
 
 }
 
-window.onload = function() {
+window.addEventListener("load", function() {
     debouncedInit();
-};
+});
 
-window.onresize = function() {
+window.addEventListener("resize", function() {
     debouncedInit();
-};
+});
 
 var debouncedInit = _.debounce(init,300, {maxWait: 2000});
