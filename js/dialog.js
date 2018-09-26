@@ -1,17 +1,16 @@
 function showDialog(cardName) {
     $('.dialog').show();
 
-    $('.dialog-content').click(function() {
-    });
-    $('.dialog').click(function() {
-        toggleDialog();
-    });
-
-    $('.dialog.card.detail').find('.' + cardName).show();
+    if (cardName) {
+        $('.dialog .detail.' + cardName).show();
+    }
+    isDialogOpen = true;
 }
 
 function hideDialog() {
-    $('dialog').hide();
+    $('.dialog').hide();
+    $('.dialog .detail').hide();
+    isDialogOpen = false;
 }
 
 function toggleDialog() {
@@ -22,4 +21,19 @@ function toggleDialog() {
     }
 }
 
-var isDialogOpen = false;
+function setupDialog() {
+    isDialogOpen = false;
+    $('.dialog').click(function(event) {
+        if (event.target !== this)
+            return;
+        toggleDialog();
+    });
+    $('.dialog-content').click(function() {
+    });
+}
+
+var isDialogOpen;
+
+window.onload = function() {
+    setupDialog();
+};
