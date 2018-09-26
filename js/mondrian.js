@@ -105,11 +105,12 @@ function init() {
 
 }
 
-var resizeTimeout;
-window.onresize = function(){
-   if (resizeTimeout) {
-      clearTimeout(resizeTimeout);
-   }
-   resizeTimeout = setTimeout(init,200);
+window.onload = function() {
+    debouncedInit();
 };
-init();
+
+window.onresize = function() {
+    debouncedInit();
+};
+
+var debouncedInit = _.debounce(init,300, {maxWait: 2000});
