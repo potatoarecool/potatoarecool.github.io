@@ -1,17 +1,19 @@
-var MIN_ACCEPTABLE_SQUARE_WIDTH = 500;
+var MIN_ACCEPTABLE_SQUARE_WIDTH = 200;
 var MIN_ACCEPTABLE_SQUARE_HEIGHT = 200;
-var MIN_LINE_SEPARATION = 15;
+var MAX_ITERATIONS = 50;
+var MIN_LINE_SEPARATION = 40;
 
 function generateMondrian(width, height, opts) {
    var mondrian;
-   for(var itr=0;itr<20;itr++) {
+   for(var itr=0;itr<MAX_ITERATIONS;itr++) {
       mondrian = generateMondrianWork(width, height, opts);
 
       if (validateMondrian(mondrian, opts)) {
-         console.log(itr + "tries to generate");
-         break;
+         console.log("valid mondrian generated from " + itr + " iterations");
+         return mondrian;
       }
    }
+   console.log("mondrian failed to validate, showing last attempt");
    return mondrian;
 }
 
@@ -51,7 +53,7 @@ function validateMondrian(mondrian, opts) {
       } else if (_.isNaN(square.width) || _.isNaN(square.height)) {
          return true;
       }
-      console.log(idx, square.color, square.width, square.height);
+      console.log("debug: validateMondrian", mondrian, idx, square.color, square.width, square.height);
 
       return !square.color &&
          square.width > MIN_ACCEPTABLE_SQUARE_WIDTH &&
@@ -66,7 +68,7 @@ function validateMondrian(mondrian, opts) {
 function getSquares(mondrian) {
    var hLines = _(mondrian.lines).filter('isHorizontal').sortBy('start.y').run();
    var vLines = _(mondrian.lines).filter({isHorizontal: false}).sortBy('start.x').run();
-   console.log(mondrian);
+   //console.log(mondrian);
 
    _.forEach(hLines, function(hLine, idx) {
       var x1 = hLine.start.x;
