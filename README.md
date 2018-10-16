@@ -1,3 +1,6 @@
+# My even more crummy website (V3)
+- added a triclops landing page
+
 # My even more crummy website (V2)
 - randomly generated mondrian-style design
 - looks different every time
