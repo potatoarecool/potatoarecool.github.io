@@ -53,7 +53,7 @@ function validateMondrian(mondrian, opts) {
       } else if (_.isNaN(square.width) || _.isNaN(square.height)) {
          return true;
       }
-      console.log("debug: validateMondrian", mondrian, idx, square.color, square.width, square.height);
+      //console.log("debug: validateMondrian", mondrian, idx, square.color, square.width, square.height);
 
       return !square.color &&
          square.width > MIN_ACCEPTABLE_SQUARE_WIDTH &&
@@ -119,6 +119,9 @@ function getSquares(mondrian) {
 }
 
 function colorSquare(mondrian, minSquareIdx) {
+   if (mondrian.squares.length - 1 < minSquareIdx) {
+         return;
+   }
    var colors = ['#c70000', '#f4b600', '#2d2bb4', '#000000'];
    var square = mondrian.squares[getRand(minSquareIdx,mondrian.squares.length-1)];
    square.color = colors[getRand(0,colors.length-1)];
@@ -223,8 +226,8 @@ function generateLineWork(mondrian, opts) {
          opts.isHorizontal = getRand(0,1);
    }
 
-   var x = getRand(0,mondrian.width);
-   var y = getRand(0,mondrian.height);
+   var x = getRand(0, mondrian.width);
+   var y = getRand(0, mondrian.height);
 
    var startPoint, endPoint;
 
@@ -239,11 +242,23 @@ function generateLineWork(mondrian, opts) {
    } else {
       var length = (opts.isHorizontal) ? getRand(0, mondrian.width) : getRand(0, mondrian.height);
       if (opts.isHorizontal) {
-         startPoint = new Point(x-length/2, y);
-         endPoint = new Point(x+length/2, y);
+         startPoint = new Point(Math.floor(x-length/2), y);
+         if (startPoint.x < 0) {
+               startPoint.x = 0;
+         }
+         endPoint = new Point(Math.floor(x+length/2), y);
+         if (endPoint.x > mondrian.width) {
+               endPoint.x = mondrian.width;
+         }
       } else {
-         startPoint = new Point(x, y-length/2);
-         endPoint = new Point(x, y+length/2);
+         startPoint = new Point(x, Math.floor(y-length/2));
+         if (startPoint.y < 0) {
+               startPoint.y = 0;
+         }
+         endPoint = new Point(x, Math.floor(y+length/2));
+         if (endPoint.y > mondrian.height) {
+               endPoint.y = mondrian.height;
+         }
       }
    }
    return new Line(startPoint, endPoint);
