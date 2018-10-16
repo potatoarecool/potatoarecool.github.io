@@ -1,3 +1,9 @@
+# My just crummy website (V4)
+- made a bunch of changes to the mondrian design:
+	- added dialogs to hide clutter
+	- fixed a bunch of bugs
+	- added tests & content
+
 # My even more crummy website (V3)
 - added a triclops landing page
 
