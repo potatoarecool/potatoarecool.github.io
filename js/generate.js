@@ -1,17 +1,19 @@
-var MIN_ACCEPTABLE_SQUARE_WIDTH = 500;
+var MIN_ACCEPTABLE_SQUARE_WIDTH = 200;
 var MIN_ACCEPTABLE_SQUARE_HEIGHT = 200;
-var MIN_LINE_SEPARATION = 15;
+var MAX_ITERATIONS = 50;
+var MIN_LINE_SEPARATION = 40;
 
 function generateMondrian(width, height, opts) {
    var mondrian;
-   for(var itr=0;itr<20;itr++) {
+   for(var itr=0;itr<MAX_ITERATIONS;itr++) {
       mondrian = generateMondrianWork(width, height, opts);
 
       if (validateMondrian(mondrian, opts)) {
-         console.log(itr + "tries to generate");
-         break;
+         console.log("valid mondrian generated from " + itr + " iterations");
+         return mondrian;
       }
    }
+   console.log("mondrian failed to validate, showing last attempt");
    return mondrian;
 }
 
@@ -28,7 +30,7 @@ function generateMondrianWork(width, height, opts) {
    _.times(getRand(opts.minHLines, opts.maxHLines), function() {
       mondrian.addLine(generateLine(mondrian, {isHorizontal: true, full:true}));
    });
-   _.times(getRand(opts.minVcLines, opts.maxVLines), function() {
+   _.times(getRand(opts.minVLines, opts.maxVLines), function() {
       mondrian.addLine(generateLine(mondrian, {isHorizontal: false, full:true}));
    });
    _.times(getRand(opts.minShortLines, opts.maxShortLines), function() {
@@ -51,7 +53,7 @@ function validateMondrian(mondrian, opts) {
       } else if (_.isNaN(square.width) || _.isNaN(square.height)) {
          return true;
       }
-      console.log(idx, square.color, square.width, square.height);
+      //console.log("debug: validateMondrian", mondrian, idx, square.color, square.width, square.height);
 
       return !square.color &&
          square.width > MIN_ACCEPTABLE_SQUARE_WIDTH &&
@@ -63,15 +65,25 @@ function validateMondrian(mondrian, opts) {
 
 //-----------SQUARE CODE-------------------------------------------------------------
 
+/**
+ * Get all the squares in the mondrian.
+ *
+ * The algorithm goes clockwise:
+ * top left corner, top right corner, bottom right, bottom left,
+ * but via top left corner and bottom right corner
+ *
+ * @param {Mondrian} mondrian
+ */
 function getSquares(mondrian) {
    var hLines = _(mondrian.lines).filter('isHorizontal').sortBy('start.y').run();
    var vLines = _(mondrian.lines).filter({isHorizontal: false}).sortBy('start.x').run();
-   console.log(mondrian);
+   //console.log(mondrian);
 
    _.forEach(hLines, function(hLine, idx) {
+      // for each horizonal line, pick the top left point
       var x1 = hLine.start.x;
       var y1 = hLine.start.y;
-      while(_.isNumber(x1) && x1 < mondrian.width) {
+      while(_.isNumber(x1) && x1 < mondrian.width && x1 < hLine.end.x) {
 
          var x2;
          var y2;
@@ -84,7 +96,7 @@ function getSquares(mondrian) {
             }
          });
 
-         // find x3 via. going right
+         // find x2 via. going right
          _.forEach(vLines, function(vLine) {
             if (vLine.start.y <= y1 && vLine.end.y >= y1 && vLine.start.x > x1) {
                x2 = vLine.start.x;
@@ -107,6 +119,9 @@ function getSquares(mondrian) {
 }
 
 function colorSquare(mondrian, minSquareIdx) {
+   if (mondrian.squares.length - 1 < minSquareIdx) {
+         return;
+   }
    var colors = ['#c70000', '#f4b600', '#2d2bb4', '#000000'];
    var square = mondrian.squares[getRand(minSquareIdx,mondrian.squares.length-1)];
    square.color = colors[getRand(0,colors.length-1)];
@@ -211,8 +226,8 @@ function generateLineWork(mondrian, opts) {
          opts.isHorizontal = getRand(0,1);
    }
 
-   var x = getRand(0,mondrian.width);
-   var y = getRand(0,mondrian.height);
+   var x = getRand(0, mondrian.width);
+   var y = getRand(0, mondrian.height);
 
    var startPoint, endPoint;
 
@@ -227,11 +242,23 @@ function generateLineWork(mondrian, opts) {
    } else {
       var length = (opts.isHorizontal) ? getRand(0, mondrian.width) : getRand(0, mondrian.height);
       if (opts.isHorizontal) {
-         startPoint = new Point(x-length/2, y);
-         endPoint = new Point(x+length/2, y);
+         startPoint = new Point(Math.floor(x-length/2), y);
+         if (startPoint.x < 0) {
+               startPoint.x = 0;
+         }
+         endPoint = new Point(Math.floor(x+length/2), y);
+         if (endPoint.x > mondrian.width) {
+               endPoint.x = mondrian.width;
+         }
       } else {
-         startPoint = new Point(x, y-length/2);
-         endPoint = new Point(x, y+length/2);
+         startPoint = new Point(x, Math.floor(y-length/2));
+         if (startPoint.y < 0) {
+               startPoint.y = 0;
+         }
+         endPoint = new Point(x, Math.floor(y+length/2));
+         if (endPoint.y > mondrian.height) {
+               endPoint.y = mondrian.height;
+         }
       }
    }
    return new Line(startPoint, endPoint);
