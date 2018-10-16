@@ -35,6 +35,8 @@ function init() {
 
 }
 
+var debouncedInit = _.debounce(init,300, {maxWait: 2000});
+
 window.addEventListener("load", function() {
     debouncedInit();
 });
@@ -42,5 +44,3 @@ window.addEventListener("load", function() {
 window.addEventListener("resize", function() {
     debouncedInit();
 });
-
-var debouncedInit = _.debounce(init,300, {maxWait: 2000});

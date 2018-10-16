@@ -16,7 +16,7 @@ describe('test utils', function () {
 	});
 	describe('test line', function () {
 		it('can create line', function () {
-			var p1 = new Point(0, 0);
+			var p1 = new Point(0, 5);
 			var p2 = new Point(5, 5);
 			var l = new Line(p1, p2);
 
@@ -24,6 +24,17 @@ describe('test utils', function () {
 			assert.strictEqual(l.start.y, p1.y);
 			assert.strictEqual(l.end.x, p2.x);
 			assert.strictEqual(l.end.y, p2.y);
+			assert(l.isHorizontal);
+
+			var p1 = new Point(5, 0);
+			var p2 = new Point(5, 5);
+			var l = new Line(p1, p2);
+
+			assert.strictEqual(l.start.x, p1.x);
+			assert.strictEqual(l.start.y, p1.y);
+			assert.strictEqual(l.end.x, p2.x);
+			assert.strictEqual(l.end.y, p2.y);
+			assert(!l.isHorizontal);
 		});
 		it('line start and end are done right', function () {
 			var p1 = new Point(8, 0);
@@ -81,6 +92,7 @@ describe('test utils', function () {
 				assert(res >= start && res <= end);
 			});
 
+			assert.strictEqual(getRand(3,3),3);
 			expect(function(){getRand(7,5)}).to.throw('can not get rand of negative range');
 		});
 	});
@@ -92,6 +104,12 @@ describe('test utils', function () {
 			assert.strictEqual(m.height, 200);
 			assert.strictEqual(m.lines.length, 0);
 			assert.strictEqual(m.squares.length, 0);
+
+			m.addLine('A');
+			assert.strictEqual(m.lines[0], 'A');
+			m.addSquare('B');
+			assert.strictEqual(m.squares[0], 'B');
+
 		});
 	});
 });

@@ -30,7 +30,7 @@ function generateMondrianWork(width, height, opts) {
    _.times(getRand(opts.minHLines, opts.maxHLines), function() {
       mondrian.addLine(generateLine(mondrian, {isHorizontal: true, full:true}));
    });
-   _.times(getRand(opts.minVcLines, opts.maxVLines), function() {
+   _.times(getRand(opts.minVLines, opts.maxVLines), function() {
       mondrian.addLine(generateLine(mondrian, {isHorizontal: false, full:true}));
    });
    _.times(getRand(opts.minShortLines, opts.maxShortLines), function() {
@@ -65,15 +65,25 @@ function validateMondrian(mondrian, opts) {
 
 //-----------SQUARE CODE-------------------------------------------------------------
 
+/**
+ * Get all the squares in the mondrian.
+ *
+ * The algorithm goes clockwise:
+ * top left corner, top right corner, bottom right, bottom left,
+ * but via top left corner and bottom right corner
+ *
+ * @param {Mondrian} mondrian
+ */
 function getSquares(mondrian) {
    var hLines = _(mondrian.lines).filter('isHorizontal').sortBy('start.y').run();
    var vLines = _(mondrian.lines).filter({isHorizontal: false}).sortBy('start.x').run();
    //console.log(mondrian);
 
    _.forEach(hLines, function(hLine, idx) {
+      // for each horizonal line, pick the top left point
       var x1 = hLine.start.x;
       var y1 = hLine.start.y;
-      while(_.isNumber(x1) && x1 < mondrian.width) {
+      while(_.isNumber(x1) && x1 < mondrian.width && x1 < hLine.end.x) {
 
          var x2;
          var y2;
@@ -86,7 +96,7 @@ function getSquares(mondrian) {
             }
          });
 
-         // find x3 via. going right
+         // find x2 via. going right
          _.forEach(vLines, function(vLine) {
             if (vLine.start.y <= y1 && vLine.end.y >= y1 && vLine.start.x > x1) {
                x2 = vLine.start.x;

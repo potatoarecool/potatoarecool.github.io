@@ -62,10 +62,10 @@ function Point(x,y) {
 }
 
 var defaultOpts = {
-   minHLines: 3,
-   maxHLines: 6,
-   minVLines: 3,
-   maxVLines: 5,
+   minHLines: 2,
+   maxHLines: 5,
+   minVLines: 1,
+   maxVLines: 3,
    minShortLines: 3,
    maxShortLines: 7,
    minSquares: 4,
